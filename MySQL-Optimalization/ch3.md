@@ -254,3 +254,104 @@
     - 메모리가 할당되어 있는 컨슈머
     - 특정 이벤트의 수 및 메트릭의 최댓값 확인 가능
     - 메모리 바이트 수 포함 
+
+질문 1
+
+```
+동반 스키마, 프리페어드 스테이트먼트, 스토어드 루틴이 무엇인가요? 
+by 수아
+```
+
+- 동반 스키마 
+    - MySQL 공식 문서에서는 정확하게 Companion Schema라는 단어를 지칭하지는 않음
+    - 다만 Companion Section이라는 단어가 나오고 이는 `Data dictionary` 및 `Atomic DDL`등을 하위 항목으로 포함
+    - 따라서 공통적으로 쓰는 메타 테이블 같은 의미로 해석하는 것이 옳음
+
+- 프리페어드 스테이트 먼트
+    - ![프리페어드 스테이트먼트](https://ko.wikipedia.org/wiki/%ED%94%84%EB%A6%AC%ED%8E%98%EC%96%B4%EB%93%9C_%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%EB%A8%BC%ED%8A%B8)
+    - 미리 만들어놓은 SQL 템플릿으로 해석하면 될 거 같음
+
+- 스토어드 루틴
+    - 공식 문서 내용
+        - A stored routine is a set of SQL statements that can be stored in the server. Once this has been done, clients don't need to keep reissuing the individual statements but can refer to the stored routine instead.
+    - 데이터베이스 서버 상에서 실행되는 SQL 문들 모음
+
+질문 2
+
+```
+질문1. p66 의 "sys 스키마는 쿼리 텍스트 대신 다이제스트 텍스트를 사용하기 때문에 원시 performance_schema 테이블에 액세스할 때처럼 SQL 또는 다이제스트 텍스트 대신 다이제스트 쿼리 텍스트를 얻을 수 있습니다" 가 어떤 의미인지 모르겠습니다.
+ㄴ 쿼리 텍스트 / 다이제스트 텍스트 / 다이제스트 쿼리 텍스트 가 어떻게 다른 건가요?
+```
+
+- 질문 1
+    - 데이터베이스 다이제스트를 일반적으로 데이터베이스 최신 블록 해시라 명명
+    - 따라서 사용자가 쓰는 SQL문 <-> sys 스키마 조회 간의 구문이 상이하다는 것을 알 수 있음
+    - 여기서 쿼리문 : SQL / 다이제스트 쿼리 텍스트 : 다이제스트 view 쿼리 문
+    - 그러면 다이제스트 텍스트는 무엇일까?
+    - 아래의 형식으로 제공되는 텍스트
+
+```
+EVENT_NAME: statement/sql/select
+                 COUNT_STAR: 54
+             SUM_TIMER_WAIT: 38860400000
+             MIN_TIMER_WAIT: 52400000
+             AVG_TIMER_WAIT: 719600000
+             MAX_TIMER_WAIT: 12631800000
+              SUM_LOCK_TIME: 88000000
+                 SUM_ERRORS: 0
+               SUM_WARNINGS: 0
+          SUM_ROWS_AFFECTED: 0
+```
+
+```
+질문2. p74 의 "메타데이터 잠금은 트랜잭션이 완료될 때까지 유지됩니다. 따라서 여러 개의 쿼리문을 하나의 트랜잭션으로 묶어서 사용하는 경우 문제를 해결하기가 더 어려워집니다" 가 어떤 의미인지 모르겠습니다.
+ㄴ 잠금 설정 / 잠금 요구 / 잠금 해제 / 잠금 충돌 / 잠금 유지 가 어떤 상태를 의미하는 걸까요?
+```
+
+- MySQL DML 쿼리가 실행되고 있는 상태
+
+```
+질문3. p79 ~ p82 에서 "서버 변수 / 상태 변수 / 전역 변수 / 세션 변수 / 전역 상태 / 세션 상태" 는 서로 어떤 관계일까요?
+ㄴ 서버 변수 가 전역 변수(global_variables), 세션 변수(session_variables) 를, 상태 변수가 전역 상태(global_status), 세션 상태(session_status)를 각각 포괄하는 개념일까요?
+```
+
+- ![MySQL 변수](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html)
+- 글로벌 서버 변수
+    - 인증 플러그인 로깅 수준
+    - 오토 커밋 정보
+    - TCP/IP 대기열 크기 등등
+- 글로벌 세션 변수
+    - read_only	
+    - 타임 스탬프
+- 부연해준 설명이 맞음 두 상태를 동시에 가지는 경우도 있음
+- 예를 들어 timestamp 시스템 변수 값을 2020-01-01로 지정해놓아도 실제로는 다른 값을 가짐 전자가 서버 변수 후자가 세션 변수
+
+
+```
+질문4. p72 의 "프로파일링은 일반적인 서버 단계에서만 사용할 수 있다는 점을 반드시 유의해야 합니다. (이하 생략)" 문단이 어떤 걸 의미하는 걸까요?
+ㄴ 스토리지 엔진이 performance_schema를 사용한 프로파일링을 지원하지 않는다는 게, state/sql/update와 같은 단계가 스토리지 엔진 내부 업데이트를 포함하거나 잠금 또는 경합 문제로 기다릴 수 있다는 것과 어떻게 연결되는지 궁금합니다.
+
+by 재영
+```
+
+- 두 가지는 별개의 개념
+- performance_schema에 적재하는 칼럼을 사용하지 않는 의미로 받아들여짐
+- 
+
+
+질문 3
+```
+Q1. MySQL 성능 스키마에서 말하는 다이제스트는 정확히 무엇일까. 
+by 영우
+```
+
+- 위에 내용 설명!
+
+질문 4
+```
+Q1. 스토어드 루틴이 뭔지 저도 잘 모르겠어요.
+Q2. 서버, 상태변수 모두 세션이 있는데 어떻게 다른걸까요?
+by 진영
+```
+
+- 
