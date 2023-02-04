@@ -225,7 +225,7 @@
         - 전역
         - 세션
         - 소스
-    - 상세 변수
+    - 상태 변수
         - 전역
         - 세션
         - 집계
@@ -268,7 +268,7 @@ by 수아
     - 따라서 공통적으로 쓰는 메타 테이블 같은 의미로 해석하는 것이 옳음
 
 - 프리페어드 스테이트 먼트
-    - ![프리페어드 스테이트먼트](https://ko.wikipedia.org/wiki/%ED%94%84%EB%A6%AC%ED%8E%98%EC%96%B4%EB%93%9C_%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%EB%A8%BC%ED%8A%B8)
+    - [프리페어드 스테이트먼트](https://ko.wikipedia.org/wiki/%ED%94%84%EB%A6%AC%ED%8E%98%EC%96%B4%EB%93%9C_%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%EB%A8%BC%ED%8A%B8)
     - 미리 만들어놓은 SQL 템플릿으로 해석하면 될 거 같음
 
 - 스토어드 루틴
@@ -315,7 +315,7 @@ EVENT_NAME: statement/sql/select
 ㄴ 서버 변수 가 전역 변수(global_variables), 세션 변수(session_variables) 를, 상태 변수가 전역 상태(global_status), 세션 상태(session_status)를 각각 포괄하는 개념일까요?
 ```
 
-- ![MySQL 변수](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html)
+- [MySQL 변수](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html)
 - 글로벌 서버 변수
     - 인증 플러그인 로깅 수준
     - 오토 커밋 정보
@@ -336,7 +336,7 @@ by 재영
 
 - 두 가지는 별개의 개념
 - performance_schema에 적재하는 칼럼을 사용하지 않는 의미로 받아들여짐
-- 
+- 별도의 프로파일링용 임시 테이블로 트랜잭션 경합이 발생 가능함을 의미
 
 
 질문 3
@@ -352,6 +352,4 @@ by 영우
 Q1. 스토어드 루틴이 뭔지 저도 잘 모르겠어요.
 Q2. 서버, 상태변수 모두 세션이 있는데 어떻게 다른걸까요?
 by 진영
-```
-
-- 
+``` 
